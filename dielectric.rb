@@ -26,6 +26,8 @@ get '/:station/:time' do |station, time|
 
   halt 404 unless title && artist
 
+  response['Cache-Control'] = 'public; max-age=86400'
+
   <<HERE
 <plist version="1.0">
 <dict>
