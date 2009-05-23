@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'tzinfo'
 require 'open-uri'
+require 'cgi'
 
 get '/' do
   'Hello world'
@@ -32,9 +33,9 @@ get '/:station/:time' do |station, time|
 <plist version="1.0">
 <dict>
 	<key>title</key>
-	<string>#{title}</string>
+	<string>#{CGI::escapeHTML title}</string>
 	<key>artist</key>
-	<string>#{artist}</string>
+	<string>#{CGI::escapeHTML artist}</string>
 </dict>
 </plist>
 HERE
