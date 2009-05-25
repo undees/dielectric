@@ -40,3 +40,13 @@ get '/:station/:time' do |station, time|
 </plist>
 HERE
 end
+
+get '/stations' do
+  <<HERE
+<plist version="1.0">
+<array>
+	<string>KNRK</string>
+</array>
+</plist>
+HERE
+end
