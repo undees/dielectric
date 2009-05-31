@@ -22,8 +22,9 @@ get '/:station/:time' do |station, time|
   headers = {'User-Agent' => 'Mozilla/5.0'}
   html = open(url, headers) {|f| f.read}
 
-  title = %r(<td>([^<]+)<br/>).match(html)[1]
-  artist = %r(<br/>by ([^\\<]+)<br/>).match(html)[1]
+  no_match = [nil, nil]
+  title = (%r(<td>([^<]+)<br/>).match(html) || no_match)[1]
+  artist = (%r(<br/>by ([^\\<]+)<br/>).match(html) || no_match)[1]
 
   halt 404 unless title && artist
 
