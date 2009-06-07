@@ -6,7 +6,7 @@ require 'open-uri'
 require 'cgi'
 
 get '/' do
-  'Hello world'
+  redirect '/index.html'
 end
 
 get '/:station/:time' do |station, time|
