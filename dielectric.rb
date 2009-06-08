@@ -9,7 +9,7 @@ get '/' do
   redirect '/index.html'
 end
 
-get ':city/:station/:time' do |city, station, time|
+get '/:city/:station/:time' do |city, station, time|
   station.downcase!
   halt 404 unless ['knrk', 'kink'].include? station
 
