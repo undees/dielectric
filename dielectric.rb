@@ -9,7 +9,7 @@ get '/' do
   redirect '/index.html'
 end
 
-get '/:station/:time' do |station, time|
+get ':city/:station/:time' do |city, station, time|
   station.downcase!
   halt 404 unless ['knrk', 'kink'].include? station
 
@@ -83,7 +83,7 @@ get '/:station/:time' do |station, time|
 HERE
 end
 
-get '/stations' do
+get '/:city/stations' do |city|
   <<HERE
 <plist version="1.0">
 <array>
