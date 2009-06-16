@@ -55,11 +55,21 @@ HERE
 end
 
 get '/:city/stations' do |city|
+  url = 'http://api.yes.com/1/stations?loc=Portland,+OR&max=20&genre=rock'
+  json = open(url) {|f| f.read}
+  stations = JSON.parse(json)['stations'].
+    map {|s| s['name']}.
+    reject {|s| s.include?('-AM')}.
+    sort
+
+  response['Cache-Control'] = 'public; max-age=86400'
+
+  rows = stations.map {|s| "\t<string>#{s}</string>\n"}
+
   <<HERE
 <plist version="1.0">
 <array>
-	<string>KNRK</string>
-	<string>KINK</string>
+#{rows}
 </array>
 </plist>
 HERE
