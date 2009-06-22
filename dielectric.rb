@@ -9,7 +9,7 @@ get '/' do
   redirect '/index.html'
 end
 
-get '/:city/:station/:time' do |city, station, time|
+get '/:station/:time' do |station, time|
   # All stations are in Pacific time for now.
   utc = Time.parse(time)
   tz = TZInfo::Timezone.get('America/Los_Angeles')
@@ -54,7 +54,7 @@ get '/:city/:station/:time' do |city, station, time|
 HERE
 end
 
-get '/:city/stations' do |city|
+get '/stations/:zip' do |zip|
   url = 'http://api.yes.com/1/stations?loc=Portland,+OR&max=20&genre=rock'
   json = open(url) {|f| f.read}
   stations = JSON.parse(json)['stations'].
