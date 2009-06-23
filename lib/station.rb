@@ -17,8 +17,9 @@ class Station
     @name == other.name
   end
 
-  def self.find_all_by_zip(zip)
-    results = get('/stations', :query => {:loc => zip})['stations']
+  def self.find_all_by_location(location)
+    results = get('/stations',
+                  :query => {:loc => location, :max => 50})['stations']
     results.map {|r| Station.new(r)}
   end
 

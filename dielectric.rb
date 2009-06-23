@@ -9,8 +9,8 @@ get '/' do
   redirect '/index.html'
 end
 
-get '/stations/:zip' do |zip|
-  stations = Station.find_all_by_zip(zip)
+get '/stations/:location' do |location|
+  stations = Station.find_all_by_location(location)
   response['Cache-Control'] = 'public; max-age=86400'
   Station.plist_for_array(stations)
 end
