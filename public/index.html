@@ -17,41 +17,21 @@
       <a id="backButton" class="button" href="#"></a>
     </div>
 
-    <div id="just_played" title="Just Played" class="panel">
-      <h2>Description</h2>
-      <fieldset class="description">
-        <p>Welcome to Just Played, the iPhone app that helps you bookmark songs when you're listening to the radio, and look them up later when you're online.</p>
-        <p>The app and server software are free to use and modify.</p>
-      </fieldset>
-
-      <h2>Stubborn</h2>
-      <ul>
-        <li><a href="#artists">Foo</a></li>
-      </ul>
-
-      <h2>More Info</h2>
-      <fieldset id="more_info" title="More Info" class="options">
-        <div class="row"><label>What It's For</label><p>me</p></div>
-        <div class="row"><label>How to Use It</label></div>
-        <div class="row"><label>Making Changes</label></div>
-      </fieldset>
-    </div>
-
     <ul id="justPlayed" title="Just Played" selected="true">
         <li class="description">
           <p>Welcome to Just Played, the iPhone app that helps you bookmark songs when you're listening to the radio, and look them up later when you're online.</p>
-          <p>The app and server software are free to use and modify.</p>
+          <p>The app is free to use and modify.</p>
+          <p><a href="http://api.yes.com"><img src="poweredbyyes_k.png" /></a></p>
         </li>
         <li class="group">Details</li>
         <li><a href="#whatItsFor">What It's For</a></li>
         <li><a href="#howToUseIt">How to Use It</a></li>
-        <li><a href="#makingChanges">Making Changes</a></li>
     </ul>
 
     <ul id="whatItsFor">
       <li class="description">
-        <p>Let's say you're driving in the car, and you just caught the end of a fantastic song on the radio. How do you find out what it was?</p>
-        <p>You can wait half an hour for the DJ to come back on and announce the title. Or a passenger (eyes on the road, you!) can mark what station you're on by tapping its name in Just Played.</p>
+        <p>Let's say you're riding in the car, and you just caught the end of a fantastic song on the radio. How do you find out what it was?</p>
+        <p>You can wait half an hour for the DJ to come back on and announce the title. Or a you can mark what station you're on by tapping its name in Just Played. If you're driving, have someone else do this part!</p>
         <p>Later, when you're back home, you can look up all the songs with the touch of a button, and tap a song title to buy it from the iTunes Store.</p>
       </li>
     </ul>
@@ -59,29 +39,14 @@
     <ul id="howToUseIt">
       <li class="description">
         <ol>
-          <li>The first time you launch Just Played, tap the Reload button in the corner. The app will connect to the network and fill in the list of supported radio stations.</li>
+          <li>Unless you're in Portland, the first thing you'll need to do is enter a city name. From your phone's Home Screen, go into Settings and tap Just Played to change your location.</li>
+          <li>Launch Just Played, and then tap the Locate button near the lower left corner. The app will connect to the network and get a list of nearby radio stations. You can delete any stations you don't care about by swiping your finger to the right over the station's name.</li>
           <li>Any time you hear a song you like, tap the name of the radio station to make a "snap" of that moment in time. If you're driving, have someone else do this for you!</li>
-          <li>When you're back on your home WiFi connection, click the Reload button. The app will look up the title and artist for each snap, and show them in place of the radio station call letters. If a song title fails to appear, it means that the information was unavailable from the network.</li>
+          <li>When you're back on your home WiFi connection, click the Reload button at the bottom center. The app will look up the title and artist for each snap, and show them in place of the radio station call letters. If a song title fails to appear, it means that the information isn't on the network yet.</li>
           <li>Tap a song title to search for it in the iTunes Store.</li>
           <li>Press the Delete button to clear out the list of snaps and make room for more.</li>
-          <li>If the radio station you like isn't on the list, see the "Making Changes" page of this guide.</li>
+          <li>See the <a href="http://25y26z.uservoice.com">support page</a> for help, or roll up your sleeves and grab the <a href="http://github.com/undees/justplayed">source code</a> if you'd like to make changes.</li>
         </ol>
-      </li>
-    </ul>
-
-    <ul id="makingChanges">
-      <li class="group">Radio Stations</li>
-      <li class="description">
-        <p>In the somewhat likely case that the radio station you want isn't on the list, you can tell Just Played to look up stations and songs from a different network server. Press your iPhone's Home button, tap Settings, and go to the Just Played section to change servers.</p>
-      <p>Where do you find one that has your favorite radio station? See below.</p>
-      </li>
-      <li class="group">Servers</li>
-      <li class="description">
-        <p>Either a friend has set up a server somewhere and given you the address, or... you're going to have to be that friend. The good news is that this task is well within your grasp. All the source code to the demonstration server is available in the <a href="http://github.com/undees/dielectric" target="_webapp">official repository</a>, along with instructions on how to add new stations.</p>
-      </li>
-      <li class="group">More</li>
-      <li class="description">
-        <p>This iPhone app invites you to tinker with it. Go ahead, improve the heck out of it, and make a million bucks. See <a href="http://github.com/undees/justplayed" target="_webapp">the source code</a> to find out how (except the million bucks part; that's left as an exercise for the reader).</p>
       </li>
     </ul>
   </body>
