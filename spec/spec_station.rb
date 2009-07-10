@@ -7,7 +7,7 @@ describe Station do
   it 'finds stations by location' do
     Station.should_receive(:get).
       and_return({'stations' => [@knrk_options]})
-    Station.find_all_by_zip(97205).should == [@knrk]
+    Station.find_all_by_location('Portland').should == [@knrk]
   end
 
   it 'provides a link back to the data provider' do
