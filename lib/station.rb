@@ -26,10 +26,14 @@ class Station
   def self.plist_for_array(stations)
     command = Tagz.tagz do
       plist_(:version => 1.0) do
-        dict_ do
+        array_ do
           stations.each do |station|
-            key_ station.name
-            string_ station.link
+            dict_ do
+              key_ 'name'
+              string_ station.name
+              key_ 'link'
+              string_ station.link
+            end
           end
         end
       end

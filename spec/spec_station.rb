@@ -18,10 +18,14 @@ describe Station do
     Station.plist_for_array([@knrk]).should ==
       <<HERE.gsub(/[\r\n\t]+/, '')
 <plist version="1.0">
-<dict>
-	<key>KNRK</key>
-	<string>http://yes.com/KNRK</string>
-</dict>
+<array>
+	<dict>
+		<key>name</key>
+		<string>KNRK</string>
+		<key>link</key>
+		<string>http://yes.com/KNRK</string>
+	</dict>
+</array>
 </plist>
 HERE
   end
