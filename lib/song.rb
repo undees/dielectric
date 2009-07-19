@@ -43,4 +43,12 @@ class Song
       end
     end
   end
+  
+  def self.no_match
+    Tagz.tagz do
+      plist_(:version => 1.0) do
+        dict_ {}
+      end
+    end
+  end
 end

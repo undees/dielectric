@@ -18,7 +18,7 @@ end
 get '/:station/:time' do |station, time|
   snapped_at = Time.parse(time)
   song = Song.find_by_station_and_time(station, snapped_at)
-  halt 404 unless song
+  return Song.no_match unless song
 
   response['Cache-Control'] = 'public; max-age=86400'
   Song.plist_for_hash(song)

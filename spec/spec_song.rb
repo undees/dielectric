@@ -53,4 +53,13 @@ describe Song do
 </plist>
 HERE
   end
+
+  it 'has a sensible representation of "no match"' do
+    Song.no_match.should ==
+      <<HERE.gsub(/[\r\n\t]/, '')
+<plist version="1.0">
+<dict/>
+</plist>
+HERE
+  end
 end
