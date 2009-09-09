@@ -11,7 +11,10 @@ describe Song, '.find_by_station_and_time' do
        {'title' => 'Latest',   'by' => 'Someone', 'at' => @yesterday_noon + 600},
       ]
 
+    @near_miss = {'title' => 'After Then', 'by' => 'Someone', 'at' => @yesterday_noon - 120}
+
     @before_range = @songs[0..1]
+    @barely_before_range = @before_range + [@near_miss]
     @song = @songs[2]
     @after_range = @songs[3..4]
   end
@@ -32,6 +35,12 @@ describe Song, '.find_by_station_and_time' do
     Time.should_receive(:now).and_return(@today_noon)
     Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@after_range)
     Song.find_by_station_and_time('KNRK', @yesterday_noon).should == nil
+  end
+
+  it 'returns a song just after the range' do
+    Time.should_receive(:now).and_return(@today_noon)
+    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@barely_before_range)
+    Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @near_miss
   end
 end
 

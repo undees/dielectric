@@ -23,7 +23,7 @@ class Song
     return nil if songs.empty?
 
     first = songs.first['at']
-    last = songs.last['at']
+    last = songs.last['at'] + 120
     return nil unless (first..last).include? time
 
     return songs.reverse.find {|s| s['at'] <= time}
