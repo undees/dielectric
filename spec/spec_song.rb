@@ -8,7 +8,7 @@ describe Song, '.find_by_station_and_time' do
        {'title' => 'Earlier',  'by' => 'Someone', 'at' => @yesterday_noon - 300},
        {'title' => 'Then',     'by' => 'Someone', 'at' => @yesterday_noon      },
        {'title' => 'Later',    'by' => 'Someone', 'at' => @yesterday_noon + 300},
-       {'title' => 'Lateset',  'by' => 'Someone', 'at' => @yesterday_noon + 600},
+       {'title' => 'Latest',   'by' => 'Someone', 'at' => @yesterday_noon + 600},
       ]
 
     @before_range = @songs[0..1]
