@@ -1,5 +1,47 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
+describe Song, '.find_in_range' do
+  before do
+    @today_noon = Time.local(2009, 6, 21, 12)
+    @yesterday_noon = @today_noon - 86400
+    @songs =
+      [
+       {'title' => 'Earliest', 'by' => 'Someone', 'at' => @yesterday_noon - 600},
+       {'title' => 'Earlier',  'by' => 'Someone', 'at' => @yesterday_noon - 300},
+       {'title' => 'Then',     'by' => 'Someone', 'at' => @yesterday_noon      },
+       {'title' => 'Later',    'by' => 'Someone', 'at' => @yesterday_noon + 300},
+       {'title' => 'Latest',   'by' => 'Someone', 'at' => @yesterday_noon + 600},
+      ]
+
+    @near_miss = {'title' => 'After Then', 'by' => 'Someone', 'at' => @yesterday_noon - 120}
+
+    @before_range = @songs[0..1]
+    @barely_before_range = @before_range + [@near_miss]
+    @song = @songs[2]
+    @after_range = @songs[3..4]
+  end
+
+  it 'finds songs present in the range' do
+    Song.find_in_range(@songs, @yesterday_noon).should == @song
+  end
+
+  it 'returns nil if the range is too early' do
+    Song.find_in_range(@before_range, @yesterday_noon).should == nil
+  end
+
+  it 'returns nil if the range is too late' do
+    Song.find_in_range(@after_range, @yesterday_noon).should == nil
+  end
+
+  it 'returns a song just after the range' do
+    Song.find_in_range(@barely_before_range, @yesterday_noon).should == @near_miss
+  end
+
+  it 'accepts ranges in reverse order' do
+    Song.find_in_range(@songs.reverse, @yesterday_noon).should == @song
+  end
+end
+
 describe Song, '.find_by_station_and_time' do
   before do
     @today_noon = Time.local(2009, 6, 21, 12)
@@ -23,41 +65,21 @@ describe Song, '.find_by_station_and_time' do
 
   it 'finds songs present in the range' do
     Time.should_receive(:now).and_return(@today_noon)
-    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@songs)
+    Song.should_receive(:fetch_relative_by_station).with('KNRK', 1).and_return(@songs)
     Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @song
-  end
-
-  it 'returns nil if the range is too early' do
-    Time.should_receive(:now).and_return(@today_noon)
-    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@before_range)
-    Song.should_receive(:find_recent_by_station).with('KNRK').and_return([])
-    Song.find_by_station_and_time('KNRK', @yesterday_noon).should == nil
-  end
-
-  it 'returns nil if the range is too late' do
-    Time.should_receive(:now).and_return(@today_noon)
-    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@after_range)
-    Song.should_receive(:find_recent_by_station).with('KNRK').and_return([])
-    Song.find_by_station_and_time('KNRK', @yesterday_noon).should == nil
-  end
-
-  it 'returns a song just after the range' do
-    Time.should_receive(:now).and_return(@today_noon)
-    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@barely_before_range)
-    Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @near_miss
   end
 
   it 'falls back on an alternate method if the results are empty' do
     Time.should_receive(:now).and_return(@today_noon)
-    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return([])
-    Song.should_receive(:find_recent_by_station).with('KNRK').and_return(@songs)
+    Song.should_receive(:fetch_relative_by_station).with('KNRK', 1).and_return([])
+    Song.should_receive(:fetch_recent_by_station).with('KNRK').and_return(@songs.reverse)
     Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @song
   end
 
   it 'falls back on an alternate method if the results are out of range' do
     Time.should_receive(:now).and_return(@today_noon)
-    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@before_range)
-    Song.should_receive(:find_recent_by_station).with('KNRK').and_return(@songs)
+    Song.should_receive(:fetch_relative_by_station).with('KNRK', 1).and_return(@before_range)
+    Song.should_receive(:fetch_recent_by_station).with('KNRK').and_return(@songs.reverse)
     Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @song
   end
 end

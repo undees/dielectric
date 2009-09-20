@@ -8,14 +8,25 @@ class Song
   base_uri 'api.yes.com/1'
   format :json
 
-  def self.find_relative_by_station(station, days_ago)
+  def self.fetch_relative_by_station(station, days_ago)
     json = get('/log', :query => {:name => station, :ago => days_ago})
     json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}
   end
 
-  def self.find_recent_by_station(station)
+  def self.fetch_recent_by_station(station)
     json = get('/recent', :query => {:name => station, :max => 100})
-    json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}.reverse
+    json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}
+  end
+
+  def self.find_in_range(songs, time)
+    return nil if songs.empty?
+
+    earliest, latest = [songs.first['at'], songs.last['at']].sort
+    latest += 120
+
+    return nil unless (earliest..latest).include? time
+
+    songs.sort_by {|s| s['at']}.reverse.find {|s| s['at'] <= time}
   end
 
   def self.find_by_station_and_time(station, time)
@@ -24,24 +35,9 @@ class Song
     today = Time.local year, month, day
 
     days_ago = ((today - time) / 86400).ceil
-    songs = find_relative_by_station(station, days_ago)
-    songs = find_recent_by_station(station) if songs.empty?
-    return nil if songs.empty?
 
-    first = songs.first['at']
-    last = songs.last['at'] + 120
-
-    unless (first..last).include? time
-      songs = find_recent_by_station(station)
-      return nil if songs.empty?
-
-      first = songs.first['at']
-      last = songs.last['at'] + 120
-    end
-
-    return nil unless (first..last).include? time
-
-    return songs.reverse.find {|s| s['at'] <= time}
+    self.find_in_range(self.fetch_relative_by_station(station, days_ago), time) ||
+      self.find_in_range(self.fetch_recent_by_station(station), time)
   end
 
   def self.plist_for_hash(song)
@@ -58,7 +54,7 @@ class Song
       end
     end
   end
-  
+
   def self.no_match
     Tagz.tagz do
       plist_(:version => 1.0) do
