@@ -13,6 +13,11 @@ class Song
     json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}
   end
 
+  def self.find_recent_by_station(station)
+    json = get('/recent', :query => {:name => station, :max => 100})
+    json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}.reverse
+  end
+
   def self.find_by_station_and_time(station, time)
     now = Time.now
     year, month, day = [now.year, now.month, now.day]
@@ -20,10 +25,20 @@ class Song
 
     days_ago = ((today - time) / 86400).ceil
     songs = find_relative_by_station(station, days_ago)
+    songs = find_recent_by_station(station) if songs.empty?
     return nil if songs.empty?
 
     first = songs.first['at']
     last = songs.last['at'] + 120
+
+    unless (first..last).include? time
+      songs = find_recent_by_station(station)
+      return nil if songs.empty?
+
+      first = songs.first['at']
+      last = songs.last['at'] + 120
+    end
+
     return nil unless (first..last).include? time
 
     return songs.reverse.find {|s| s['at'] <= time}

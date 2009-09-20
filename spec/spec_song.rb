@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), 'spec_helper')
+
 describe Song, '.find_by_station_and_time' do
   before do
     @today_noon = Time.local(2009, 6, 21, 12)
@@ -28,12 +30,14 @@ describe Song, '.find_by_station_and_time' do
   it 'returns nil if the range is too early' do
     Time.should_receive(:now).and_return(@today_noon)
     Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@before_range)
+    Song.should_receive(:find_recent_by_station).with('KNRK').and_return([])
     Song.find_by_station_and_time('KNRK', @yesterday_noon).should == nil
   end
 
   it 'returns nil if the range is too late' do
     Time.should_receive(:now).and_return(@today_noon)
     Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@after_range)
+    Song.should_receive(:find_recent_by_station).with('KNRK').and_return([])
     Song.find_by_station_and_time('KNRK', @yesterday_noon).should == nil
   end
 
@@ -41,6 +45,20 @@ describe Song, '.find_by_station_and_time' do
     Time.should_receive(:now).and_return(@today_noon)
     Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@barely_before_range)
     Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @near_miss
+  end
+
+  it 'falls back on an alternate method if the results are empty' do
+    Time.should_receive(:now).and_return(@today_noon)
+    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return([])
+    Song.should_receive(:find_recent_by_station).with('KNRK').and_return(@songs)
+    Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @song
+  end
+
+  it 'falls back on an alternate method if the results are out of range' do
+    Time.should_receive(:now).and_return(@today_noon)
+    Song.should_receive(:find_relative_by_station).with('KNRK', 1).and_return(@before_range)
+    Song.should_receive(:find_recent_by_station).with('KNRK').and_return(@songs)
+    Song.find_by_station_and_time('KNRK', @yesterday_noon).should == @song
   end
 end
 
