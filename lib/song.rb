@@ -18,7 +18,7 @@ class Song
     json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}
   end
 
-  def self.find_in_range(songs, time)
+  def self.select_from_range(songs, time)
     return nil if songs.empty?
 
     earliest, latest = [songs.first['at'], songs.last['at']].sort
@@ -36,8 +36,8 @@ class Song
 
     days_ago = ((today - time) / 86400).ceil
 
-    self.find_in_range(self.fetch_relative_by_station(station, days_ago), time) ||
-      self.find_in_range(self.fetch_recent_by_station(station), time)
+    self.select_from_range(self.fetch_relative_by_station(station, days_ago), time) ||
+      self.select_from_range(self.fetch_recent_by_station(station), time)
   end
 
   def self.plist_for_hash(song)

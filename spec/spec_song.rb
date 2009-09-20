@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
-describe Song, '.find_in_range' do
+shared 'sample songs' do
   before do
     @today_noon = Time.local(2009, 6, 21, 12)
     @yesterday_noon = @today_noon - 86400
@@ -20,48 +20,34 @@ describe Song, '.find_in_range' do
     @song = @songs[2]
     @after_range = @songs[3..4]
   end
+end
 
-  it 'finds songs present in the range' do
-    Song.find_in_range(@songs, @yesterday_noon).should == @song
+describe Song, '.select_from_range' do
+  behaves_like 'sample songs'
+
+  it 'returns a song present in the range' do
+    Song.select_from_range(@songs, @yesterday_noon).should == @song
   end
 
   it 'returns nil if the range is too early' do
-    Song.find_in_range(@before_range, @yesterday_noon).should == nil
+    Song.select_from_range(@before_range, @yesterday_noon).should == nil
   end
 
   it 'returns nil if the range is too late' do
-    Song.find_in_range(@after_range, @yesterday_noon).should == nil
+    Song.select_from_range(@after_range, @yesterday_noon).should == nil
   end
 
   it 'returns a song just after the range' do
-    Song.find_in_range(@barely_before_range, @yesterday_noon).should == @near_miss
+    Song.select_from_range(@barely_before_range, @yesterday_noon).should == @near_miss
   end
 
   it 'accepts ranges in reverse order' do
-    Song.find_in_range(@songs.reverse, @yesterday_noon).should == @song
+    Song.select_from_range(@songs.reverse, @yesterday_noon).should == @song
   end
 end
 
 describe Song, '.find_by_station_and_time' do
-  before do
-    @today_noon = Time.local(2009, 6, 21, 12)
-    @yesterday_noon = @today_noon - 86400
-    @songs =
-      [
-       {'title' => 'Earliest', 'by' => 'Someone', 'at' => @yesterday_noon - 600},
-       {'title' => 'Earlier',  'by' => 'Someone', 'at' => @yesterday_noon - 300},
-       {'title' => 'Then',     'by' => 'Someone', 'at' => @yesterday_noon      },
-       {'title' => 'Later',    'by' => 'Someone', 'at' => @yesterday_noon + 300},
-       {'title' => 'Latest',   'by' => 'Someone', 'at' => @yesterday_noon + 600},
-      ]
-
-    @near_miss = {'title' => 'After Then', 'by' => 'Someone', 'at' => @yesterday_noon - 120}
-
-    @before_range = @songs[0..1]
-    @barely_before_range = @before_range + [@near_miss]
-    @song = @songs[2]
-    @after_range = @songs[3..4]
-  end
+  behaves_like 'sample songs'
 
   it 'finds songs present in the range' do
     Time.should_receive(:now).and_return(@today_noon)
