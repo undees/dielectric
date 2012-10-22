@@ -1,2 +1,2 @@
-require 'dielectric'
+require './dielectric'
 run Sinatra::Application
