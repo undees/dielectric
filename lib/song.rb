@@ -24,7 +24,7 @@ class Song
     earliest, latest = [songs.first['at'], songs.last['at']].sort
     latest += 120
 
-    return nil unless (earliest..latest).include? time
+    return nil unless earliest <= time && time <= latest
 
     songs.sort_by {|s| s['at']}.reverse.find {|s| s['at'] <= time}
   end
