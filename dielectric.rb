@@ -16,7 +16,8 @@ get '/stations/:location' do |location|
 end
 
 get '/:station/:time' do |station, time|
-  snapped_at = Time.parse(time)
+  zone = Song.zone_for_station(station)
+  snapped_at = Time.parse(time + zone).getutc
   song = Song.find_by_station_and_time(station, snapped_at)
   return Song.no_match unless song
 

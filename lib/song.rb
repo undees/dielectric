@@ -3,19 +3,26 @@ require 'tagz'
 require 'time'
 require 'cgi'
 
+require 'station'
+
 class Song
   include HTTParty
   base_uri 'api.yes.com/1'
   format :json
 
-  def self.fetch_relative_by_station(station, days_ago)
+  def self.fetch_relative_by_station(station, days_ago, zone)
     json = get('/log', :query => {:name => station, :ago => days_ago})
-    json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}
+    json['songs'].map {|s| s['at'] = Time.parse(s['at'] + zone); s}
   end
 
-  def self.fetch_recent_by_station(station)
+  def self.fetch_recent_by_station(station, zone)
     json = get('/recent', :query => {:name => station, :max => 100})
-    json['songs'].reject {|s| s['by'] == '-'}.map {|s| s['at'] = Time.parse(s['at']); s}
+    json['songs'].reject {|s| s['by'] == '-'}.map {|s| s['at'] = Time.parse(s['at'] + zone); s}
+  end
+
+  def self.zone_for_station(station)
+    json = get('/station', :query => {:name => station})
+    json['tz']
   end
 
   def self.select_from_range(songs, time)
@@ -30,14 +37,16 @@ class Song
   end
 
   def self.find_by_station_and_time(station, time)
-    now = Time.now
+    now = Time.now.getutc
     year, month, day = [now.year, now.month, now.day]
-    today = Time.local year, month, day
+    today = Time.utc year, month, day
 
     days_ago = ((today - time) / 86400).ceil
 
-    self.select_from_range(self.fetch_relative_by_station(station, days_ago), time) ||
-      self.select_from_range(self.fetch_recent_by_station(station), time)
+    zone = self.zone_for_station station
+
+    self.select_from_range(self.fetch_relative_by_station(station, days_ago, zone), time) ||
+      self.select_from_range(self.fetch_recent_by_station(station, zone), time)
   end
 
   def self.plist_for_hash(song)
