@@ -15,7 +15,7 @@ class Song
 
   def self.fetch_recent_by_station(station)
     json = get('/recent', :query => {:name => station, :max => 100})
-    json['songs'].map {|s| s['at'] = Time.parse(s['at']); s}
+    json['songs'].reject {|s| s['by'] == '-'}.map {|s| s['at'] = Time.parse(s['at']); s}
   end
 
   def self.select_from_range(songs, time)
